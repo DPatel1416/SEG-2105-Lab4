@@ -26,14 +26,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/editTextPrice"
         android:layout_centerHorizontal="true"
-        android:text="Add" />
+        android:text="Add Product" />
 
     <TextView
         android:id="@+id/textViewProducts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/buttonAdd"
-        android:text="Products"
+        android:text="Product List"
         android:textStyle="bold"
         android:layout_marginTop="12dp" />
 

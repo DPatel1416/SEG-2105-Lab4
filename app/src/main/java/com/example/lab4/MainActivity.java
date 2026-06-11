@@ -1,8 +1,11 @@
 package com.example.lab4;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -41,6 +44,15 @@ public class MainActivity extends AppCompatActivity {
         productList = new ArrayList<>();
 
         buttonAdd.setOnClickListener(view -> addProduct());
+
+        listViewProducts.setOnItemClickListener((parent, view, position, id) -> {
+            Product product = productList.get(position);
+            showUpdateDeleteDialog(
+                    product.getProductId(),
+                    product.getProductName(),
+                    product.getProductPrice()
+            );
+        });
     }
 
     @Override
@@ -74,11 +86,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (!name.isEmpty() && !priceText.isEmpty()) {
             double price = Double.parseDouble(priceText);
-
             String id = databaseProducts.push().getKey();
 
             Product product = new Product(id, name, price);
-
             databaseProducts.child(id).setValue(product);
 
             editTextName.setText("");
@@ -88,5 +98,69 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Please enter name and price", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void showUpdateDeleteDialog(String productId, String productName, double productPrice) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle(productName);
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 30, 50, 10);
+
+        EditText editTextUpdatedName = new EditText(this);
+        editTextUpdatedName.setText(productName);
+        layout.addView(editTextUpdatedName);
+
+        EditText editTextUpdatedPrice = new EditText(this);
+        editTextUpdatedPrice.setText(String.valueOf(productPrice));
+        editTextUpdatedPrice.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        layout.addView(editTextUpdatedPrice);
+
+        Button buttonUpdate = new Button(this);
+        buttonUpdate.setText("UPDATE");
+        layout.addView(buttonUpdate);
+
+        Button buttonDelete = new Button(this);
+        buttonDelete.setText("DELETE");
+        layout.addView(buttonDelete);
+
+        dialogBuilder.setView(layout);
+
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+
+        buttonUpdate.setOnClickListener(v -> {
+            String name = editTextUpdatedName.getText().toString().trim();
+            String priceText = editTextUpdatedPrice.getText().toString().trim();
+
+            if (!name.isEmpty() && !priceText.isEmpty()) {
+                double price = Double.parseDouble(priceText);
+                updateProduct(productId, name, price);
+                alertDialog.dismiss();
+            } else {
+                Toast.makeText(this, "Please enter name and price", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        buttonDelete.setOnClickListener(v -> {
+            deleteProduct(productId);
+            alertDialog.dismiss();
+        });
+    }
+
+    private void updateProduct(String id, String name, double price) {
+        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("products").child(id);
+        Product product = new Product(id, name, price);
+        dR.setValue(product);
+
+        Toast.makeText(this, "Product updated", Toast.LENGTH_SHORT).show();
+    }
+
+    private void deleteProduct(String id) {
+        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("products").child(id);
+        dR.removeValue();
+
+        Toast.makeText(this, "Product deleted", Toast.LENGTH_SHORT).show();
     }
 }
