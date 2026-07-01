@@ -1,17 +1,32 @@
 package com.example.lab4;
 
 import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
 public class ExampleUnitTest {
+
     @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+    public void productConstructor_setsCorrectValues() {
+        Product product = new Product("1", "Laptop", 999.99);
+
+        assertEquals("1", product.getProductId());
+        assertEquals("Laptop", product.getProductName());
+        assertEquals(999.99, product.getProductPrice(), 0.001);
+    }
+
+    @Test
+    public void productDefaultConstructor_createsEmptyProduct() {
+        Product product = new Product();
+
+        assertNull(product.getProductId());
+        assertNull(product.getProductName());
+        assertEquals(0.0, product.getProductPrice(), 0.001);
+    }
+
+    @Test
+    public void productPrice_canStoreDecimalValue() {
+        Product product = new Product("2", "Phone", 499.50);
+
+        assertEquals(499.50, product.getProductPrice(), 0.001);
     }
 }
