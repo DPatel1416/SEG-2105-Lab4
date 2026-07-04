@@ -1,6 +1,7 @@
 package com.example.lab4;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ExampleUnitTest {
@@ -15,7 +16,7 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void productDefaultConstructor_createsEmptyProduct() {
+    public void defaultConstructor_createsEmptyProduct() {
         Product product = new Product();
 
         assertNull(product.getProductId());
@@ -24,7 +25,7 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void productPrice_canStoreDecimalValue() {
+    public void productStoresDecimalPrice() {
         Product product = new Product("2", "Phone", 499.50);
 
         assertEquals(499.50, product.getProductPrice(), 0.001);

@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
 
 permissions:
   contents: read
@@ -34,13 +34,13 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build the app
+      - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
 
-      - name: Run unit tests
+      - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest --stacktrace
 
-      - name: Upload unit-test report
+      - name: Upload Unit Test Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
